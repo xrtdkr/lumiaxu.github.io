@@ -94,13 +94,36 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="LumiaXu&#39;s Blog">
-<meta property="og:url" content="http://lumiaxu.com/index.html">
+  <meta name="description" content="Coroutine in Python引言: 本文出自David Beazley 的关于协程的PPT，现在笔者将他翻译过来。并整理成文。感谢在协程方面的专家David Beazley， 能给我们这么深入的协程上面的讲座。也希望本文能给更多pythoner普及yield的更多用法，使python的这个特性能够更加多的活跃在大家的代码中。 源PPT和源码可以从这里下载：http://www.dabea">
+<meta name="keywords" content="协程,Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python中的携程">
+<meta property="og:url" content="http://lumiaxu.com/2017/12/05/Python中的携程/index.html">
 <meta property="og:site_name" content="LumiaXu&#39;s Blog">
+<meta property="og:description" content="Coroutine in Python引言: 本文出自David Beazley 的关于协程的PPT，现在笔者将他翻译过来。并整理成文。感谢在协程方面的专家David Beazley， 能给我们这么深入的协程上面的讲座。也希望本文能给更多pythoner普及yield的更多用法，使python的这个特性能够更加多的活跃在大家的代码中。 源PPT和源码可以从这里下载：http://www.dabea">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca476be4ff?w=504&h=66&f=jpeg&s=11538">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca4bf5e89b?w=297&h=72&f=jpeg&s=5931">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca4c0c2aae?w=231&h=67&f=jpeg&s=4661">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1cad4c30a5f?w=394&h=60&f=jpeg&s=7992">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1cae0e875d3?w=524&h=179&f=jpeg&s=22192">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca4993ff80?w=513&h=155&f=jpeg&s=17379">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca70a58938?w=475&h=133&f=jpeg&s=18831">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca68f11f11?w=465&h=128&f=jpeg&s=14787">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca845377b7?w=484&h=157&f=jpeg&s=18672">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca85ada3c2?w=738&h=309&f=jpeg&s=38634">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca8a8d27e1?w=562&h=381&f=jpeg&s=43235">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca9907733b?w=661&h=106&f=jpeg&s=16601">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1caa5d74575?w=545&h=124&f=jpeg&s=15590">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1caa79f0a94?w=583&h=198&f=jpeg&s=19725">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1caba80f663?w=563&h=325&f=jpeg&s=53870">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1cac4000971?w=83&h=123&f=jpeg&s=6465">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1cacce54e5b?w=540&h=361&f=jpeg&s=47943">
+<meta property="og:updated_time" content="2019-06-30T16:42:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LumiaXu&#39;s Blog">
+<meta name="twitter:title" content="Python中的携程">
+<meta name="twitter:description" content="Coroutine in Python引言: 本文出自David Beazley 的关于协程的PPT，现在笔者将他翻译过来。并整理成文。感谢在协程方面的专家David Beazley， 能给我们这么深入的协程上面的讲座。也希望本文能给更多pythoner普及yield的更多用法，使python的这个特性能够更加多的活跃在大家的代码中。 源PPT和源码可以从这里下载：http://www.dabea">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2017/12/18/1606a1ca476be4ff?w=504&h=66&f=jpeg&s=11538">
 
 
 
@@ -108,7 +131,7 @@
 
   
   
-  <link rel="canonical" href="http://lumiaxu.com/">
+  <link rel="canonical" href="http://lumiaxu.com/2017/12/05/Python中的携程/">
 
 
 
@@ -118,7 +141,7 @@
   };
 </script>
 
-  <title>LumiaXu's Blog</title>
+  <title>Python中的携程 | LumiaXu's Blog</title>
   
 
 
@@ -166,8 +189,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -209,7 +231,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
 
     
     
@@ -317,173 +339,9 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lumiaxu.com/2019/06/30/重建日志/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="LumiaXu">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LumiaXu's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/06/30/重建日志/" class="post-title-link" itemprop="url">重建小记：我回来了</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-06-30 00:42:35" itemprop="dateCreated datePublished" datetime="2019-06-30T00:42:35+08:00">2019-06-30</time>
-            </span>
-          
-
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/lifetime/" itemprop="url" rel="index"><span itemprop="name">lifetime</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="重建Hexo的缘由"><a href="#重建Hexo的缘由" class="headerlink" title="重建Hexo的缘由"></a>重建Hexo的缘由</h1><p>今天突然想明白了个道理：内卷是必要的，但以内卷为目的是万万要不得的。</p>
-<p>从东亚到东南亚，到处洋溢着内卷的气氛。产业高度重合，大家极度焦虑，非要争个你死我活，对大家来说都是输的。</p>
-<p>可是不内卷和重建这个站点有什么关系呢？重建这个站点的目的，就是想要更多的记录美好生活(还没加入字节跳动就已经开始背抖音的slogan了😅)。多立立Flag，多尝试，多发现，多感受生活的美好。</p>
-<h1 id="关于加班"><a href="#关于加班" class="headerlink" title="关于加班"></a>关于加班</h1><p>在成长阶段加班是必要的，但无意义的加班是绝望的，没有必要的。为了加班而加班所产生的对于自由生活的恐惧才是最可怕的。</p>
-<p>想想前几周的周末，决定了不要再去公司加班，却无所事事，在粉岭站的楼下晃来晃去，内心一片孤寂无助无聊，失去了工作就和断了魂一样。</p>
-<p>所以，要努力摆脱工作对于生活，兴趣的支配。发展自己的个人兴趣爱好，区分开来工作和自己对于技术的追求。不断的学习更加新的，更加棒的技术，站在技术发展的最前面。</p>
-<h1 id="关于工作"><a href="#关于工作" class="headerlink" title="关于工作"></a>关于工作</h1><p>工作和生活是要分开的，但是不意味着工作不努力，生活中就要完全放松。相反，在有限的工作中，要发挥极大的价值，也要把生活中自己的兴趣，自己的感悟，自己的锻炼的能力，自己不断扩张的眼界，学识，能力边界给运用到工作中，发挥更大价值，赚更多钱，争取更多社会资源。</p>
-<h1 id="Let’s-Rock"><a href="#Let’s-Rock" class="headerlink" title="Let’s Rock"></a>Let’s Rock</h1><p>让我们一起摇摆，过上用力精致的生活吧。不断提升自己，在时代的大潮当中，在最有利于自己的路上一路尖叫一路飞吧。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
 
   
 
@@ -515,10 +373,8 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/12/05/Python中的携程/" class="post-title-link" itemprop="url">Python中的携程</a>
+          <h1 class="post-title" itemprop="name headline">Python中的携程
+
               
             
           </h1>
@@ -610,9 +466,7 @@
       
 
       
-        
-          
-            <h1 id="Coroutine-in-Python"><a href="#Coroutine-in-Python" class="headerlink" title="Coroutine in Python"></a>Coroutine in Python</h1><p><code>引言: 本文出自David Beazley 的关于协程的PPT，现在笔者将他翻译过来。并整理成文。感谢在协程方面的专家David Beazley， 能给我们这么深入的协程上面的讲座。也希望本文能给更多pythoner普及yield的更多用法，使python的这个特性能够更加多的活跃在大家的代码中。</code></p>
+        <h1 id="Coroutine-in-Python"><a href="#Coroutine-in-Python" class="headerlink" title="Coroutine in Python"></a>Coroutine in Python</h1><p><code>引言: 本文出自David Beazley 的关于协程的PPT，现在笔者将他翻译过来。并整理成文。感谢在协程方面的专家David Beazley， 能给我们这么深入的协程上面的讲座。也希望本文能给更多pythoner普及yield的更多用法，使python的这个特性能够更加多的活跃在大家的代码中。</code></p>
 <h2 id="源PPT和源码可以从这里下载："><a href="#源PPT和源码可以从这里下载：" class="headerlink" title="源PPT和源码可以从这里下载："></a>源PPT和源码可以从这里下载：</h2><p><a href="http://www.dabeaz.com/coroutines/" target="_blank" rel="noopener">http://www.dabeaz.com/coroutines/</a></p>
 <h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><pre><code>1. 什么是协程
 2. 协程怎么用
@@ -867,8 +721,6 @@
 <p>如果你想了解更多，请访问原作者的网站：<br><a href="http://www.dabeaz.com" target="_blank" rel="noopener">http://www.dabeaz.com</a></p>
 <p>#python/coroutine#</p>
 
-          
-        
       
     </div>
 
@@ -889,14 +741,41 @@
 
     <footer class="post-footer">
       
-
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/协程/" rel="tag"># 协程</a>
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
       
 
       
+      
+      
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/30/重建日志/" rel="prev" title="重建小记：我回来了">
+                重建小记：我回来了 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
-        <div class="post-eof"></div>
+
+      
       
     </footer>
   </div>
@@ -906,14 +785,15 @@
   </article>
 
 
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -933,8 +813,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -1071,6 +960,23 @@
       </div>
 
       
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Coroutine-in-Python"><span class="nav-number">1.</span> <span class="nav-text">Coroutine in Python</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#源PPT和源码可以从这里下载："><span class="nav-number">1.1.</span> <span class="nav-text">源PPT和源码可以从这里下载：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题："><span class="nav-number">1.2.</span> <span class="nav-text">问题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一部分：生成器和协程的介绍"><span class="nav-number">1.3.</span> <span class="nav-text">第一部分：生成器和协程的介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成器-Generator-的本质和特点"><span class="nav-number">1.3.1.</span> <span class="nav-text">生成器(Generator)的本质和特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成器的例子："><span class="nav-number">1.3.2.</span> <span class="nav-text">生成器的例子：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Yield作为表达【我们开始说协程了-】："><span class="nav-number">1.3.3.</span> <span class="nav-text">Yield作为表达【我们开始说协程了~】：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协程的执行："><span class="nav-number">1.3.4.</span> <span class="nav-text">协程的执行：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协程启动："><span class="nav-number">1.3.5.</span> <span class="nav-text">协程启动：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用协程的修饰器："><span class="nav-number">1.3.6.</span> <span class="nav-text">使用协程的修饰器：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭一个协程"><span class="nav-number">1.3.7.</span> <span class="nav-text">关闭一个协程:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用except捕获协程的关闭close"><span class="nav-number">1.3.8.</span> <span class="nav-text">使用except捕获协程的关闭close():</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抛出一个异常："><span class="nav-number">1.3.9.</span> <span class="nav-text">抛出一个异常：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些小tips"><span class="nav-number">1.3.10.</span> <span class="nav-text">一些小tips</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成器不能够同时生成值和接受值"><span class="nav-number">1.3.11.</span> <span class="nav-text">生成器不能够同时生成值和接受值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二部分：协程，管道，数据流"><span class="nav-number">1.4.</span> <span class="nav-text">第二部分：协程，管道，数据流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程管道：如下图所示，一连串进程串起来像管道一样。"><span class="nav-number">1.4.1.</span> <span class="nav-text">进程管道：如下图所示，一连串进程串起来像管道一样。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第一部分，管道源-协程源："><span class="nav-number">1.4.2.</span> <span class="nav-text">第一部分，管道源/协程源：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二部分，管道终止-协程终止："><span class="nav-number">1.4.3.</span> <span class="nav-text">第二部分，管道终止/协程终止：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子：以实现tail-f-功能为例子"><span class="nav-number">1.4.4.</span> <span class="nav-text">例子：以实现tail -f 功能为例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三部分，管道过滤器"><span class="nav-number">1.4.5.</span> <span class="nav-text">第三部分，管道过滤器:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协程和生成器的对比"><span class="nav-number">1.4.6.</span> <span class="nav-text">协程和生成器的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变得多分支：（上一个协程发送数据去多个下一段协程）"><span class="nav-number">1.4.7.</span> <span class="nav-text">变得多分支：（上一个协程发送数据去多个下一段协程）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三部分：协程，事件分发"><span class="nav-number">1.5.</span> <span class="nav-text">第三部分：协程，事件分发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#事件处理"><span class="nav-number">1.5.1.</span> <span class="nav-text">事件处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把SAX和协程组合在一起"><span class="nav-number">1.5.2.</span> <span class="nav-text">把SAX和协程组合在一起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#【最终的组合】"><span class="nav-number">1.5.3.</span> <span class="nav-text">【最终的组合】</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四部分：从数据处理到并发编程"><span class="nav-number">1.6.</span> <span class="nav-text">第四部分：从数据处理到并发编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#复习一下上面学的特点："><span class="nav-number">1.6.1.</span> <span class="nav-text">复习一下上面学的特点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个相似的主题："><span class="nav-number">1.6.2.</span> <span class="nav-text">一个相似的主题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基础的并发："><span class="nav-number">1.6.3.</span> <span class="nav-text">基础的并发：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标！协程-线程【没有蛀牙。"><span class="nav-number">1.6.4.</span> <span class="nav-text">目标！协程+线程【没有蛀牙。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标！协程-子进程"><span class="nav-number">1.6.5.</span> <span class="nav-text">目标！协程+子进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#和环境结合的协程："><span class="nav-number">1.6.6.</span> <span class="nav-text">和环境结合的协程：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五部分：任务一样的协程"><span class="nav-number">1.7.</span> <span class="nav-text">第五部分：任务一样的协程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Task的概念"><span class="nav-number">1.7.1.</span> <span class="nav-text">Task的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协程是任务的一种："><span class="nav-number">1.7.2.</span> <span class="nav-text">协程是任务的一种：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第六部分：操作系统的中断事件。（微嵌课程学的好的同学可以直接跳到这部分的“启示”✌️）"><span class="nav-number">1.8.</span> <span class="nav-text">第六部分：操作系统的中断事件。（微嵌课程学的好的同学可以直接跳到这部分的“启示”✌️）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统的执行（复习微嵌知识）"><span class="nav-number">1.8.1.</span> <span class="nav-text">操作系统的执行（复习微嵌知识）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要解决的问题（还在复习微嵌知识）"><span class="nav-number">1.8.2.</span> <span class="nav-text">需要解决的问题（还在复习微嵌知识）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中断（interrupts）和陷阱（Traps）"><span class="nav-number">1.8.3.</span> <span class="nav-text">中断（interrupts）和陷阱（Traps）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中断的底层实现（略…码字员微嵌只有70分🤦‍♀️）"><span class="nav-number">1.8.4.</span> <span class="nav-text">中断的底层实现（略…码字员微嵌只有70分🤦‍♀️）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中断的高级表现："><span class="nav-number">1.8.5.</span> <span class="nav-text">中断的高级表现：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任务调度（非常简单）："><span class="nav-number">1.8.6.</span> <span class="nav-text">任务调度（非常简单）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启示（很重要）："><span class="nav-number">1.8.7.</span> <span class="nav-text">启示（很重要）：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第七部分：让我们建一个操作系统。【起飞了，请握好扶手"><span class="nav-number">1.9.</span> <span class="nav-text">第七部分：让我们建一个操作系统。【起飞了，请握好扶手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标：满足以下条件建成一个操作系统。"><span class="nav-number">1.9.1.</span> <span class="nav-text">目标：满足以下条件建成一个操作系统。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我们用python去构建操作系统的一些动机："><span class="nav-number">1.9.2.</span> <span class="nav-text">我们用python去构建操作系统的一些动机：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一步：定义任务"><span class="nav-number">1.9.2.1.</span> <span class="nav-text">第一步：定义任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第二步：构建调度者"><span class="nav-number">1.9.2.2.</span> <span class="nav-text">第二步：构建调度者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第三步：确定任务的停止条件"><span class="nav-number">1.9.2.3.</span> <span class="nav-text">第三步：确定任务的停止条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第四步：添加系统调用基类。"><span class="nav-number">1.9.2.4.</span> <span class="nav-text">第四步：添加系统调用基类。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第4-5步：添加第一个系统调用"><span class="nav-number">1.9.2.5.</span> <span class="nav-text">第4.5步：添加第一个系统调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第五步：任务管理"><span class="nav-number">1.9.2.6.</span> <span class="nav-text">第五步：任务管理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络服务器的搭建："><span class="nav-number">1.9.3.</span> <span class="nav-text">网络服务器的搭建：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非阻塞的I-O"><span class="nav-number">1.10.</span> <span class="nav-text">非阻塞的I/O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第八部分：协程栈的一些问题的研究。"><span class="nav-number">1.11.</span> <span class="nav-text">第八部分：协程栈的一些问题的研究。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#我们可能在使用yield的时候会遇到一些问题："><span class="nav-number">1.11.1.</span> <span class="nav-text">我们可能在使用yield的时候会遇到一些问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#让我们来看看这个叫蹦床的奇淫巧技。"><span class="nav-number">1.11.2.</span> <span class="nav-text">让我们来看看这个叫蹦床的奇淫巧技。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制流："><span class="nav-number">1.11.3.</span> <span class="nav-text">控制流：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第九部分：最后的一些话。"><span class="nav-number">1.12.</span> <span class="nav-text">第九部分：最后的一些话。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#更加深远的一些话题。"><span class="nav-number">1.12.1.</span> <span class="nav-text">更加深远的一些话题。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#让我们对yield一点小尊重："><span class="nav-number">1.12.2.</span> <span class="nav-text">让我们对yield一点小尊重：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在下列三种蛀牙的情况下我们可以想起来，使用yield。"><span class="nav-number">1.12.3.</span> <span class="nav-text">在下列三种蛀牙的情况下我们可以想起来，使用yield。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">1.12.4.</span> <span class="nav-text">最后</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
       
 
@@ -1200,6 +1106,10 @@
 
 
   
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
 
   
 
@@ -1215,6 +1125,8 @@
 
   
 
+
+  
 
 
   
